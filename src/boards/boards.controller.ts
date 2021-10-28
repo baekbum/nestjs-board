@@ -4,8 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Board } from './boards.model';
 import { BoardsService } from './boards.service';
@@ -21,31 +24,33 @@ export class BoardsController {
   }
 
   @Get('/:number')
-  getBoardByNum(@Param('number') number: string): Board {
+  getBoardByNum(@Param('number', ParseIntPipe) number: number): Board {
     return this.boardService.getBoardByNum(number);
   }
 
   @Post('/create')
+  @UsePipes(ValidationPipe)
   //createBoard(@Body() body): string {
   // createBoard(
   //   @Body('id') id: string,
   //   @Body('title') title: string,
   //   @Body('desc') desc: string,
   // ): string {
-  createBoard(@Body() createDto: CreateDto): string {
+  createBoard(@Body() createDto: CreateDto): Board {
     return this.boardService.createBoard(createDto);
   }
 
   @Put('/:number')
+  @UsePipes(ValidationPipe)
   updateBoard(
-    @Param('number') number: string,
+    @Param('number', ParseIntPipe) number: number,
     @Body() updateDto: UpdateDto,
   ): Board {
     return this.boardService.updateBoard(number, updateDto);
   }
 
   @Delete('/:number')
-  deleteBoard(@Param('number') number: string): string {
+  deleteBoard(@Param('number', ParseIntPipe) number: number): string {
     return this.boardService.deleteBoard(number);
   }
 }
